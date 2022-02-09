@@ -1,0 +1,17 @@
+<!--pages/recogni/recogni.wxml-->
+<view>
+  <view id="camera_view" style="width:  100%; height: 60vh;">
+    <camera class="camera" flash="off" frame-size="small" device-position="front">
+      <view class="mask"></view>
+    </camera>
+  </view>
+  <view style="text-align: center;">{{tips}}</view>
+  <button>开始检测</button>
+  <view>
+    <text>\n注意事项:\n</text>
+    <text>1.请将人脸置于取景框中央\n</text>
+    <text>2.请摘下眼镜、口罩等遮挡物\n</text>
+    <text>3.请在光线适中的环境下进行检测\n</text>
+    <text>4.动作不要太快\n</text>
+  </view>
+</view>
