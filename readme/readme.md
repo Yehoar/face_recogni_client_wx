@@ -11,7 +11,7 @@
         -> 8.再次检测失败 -> 结束
     + 另外：每次抽取事件和行为检测成功都会保存一次帧图片(共4张)，活体检测通过后发给服务端，再次比对是否是同一个人，若是则录入
 
-* 效果演示 ![演示.mp4](readme/演示.mp4)
+* 效果演示 ![演示.mp4](https://github.com/Yehoar/face_recogni_client_wx/blob/main/readme/%E6%BC%94%E7%A4%BA.mp4)
 
 * 问题记录：
     + 因为是间隔采样，相机画面和debug的画布存在错位
