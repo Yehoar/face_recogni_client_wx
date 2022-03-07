@@ -4,13 +4,13 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1643970986766, function(require, module, exports) {
+__DEFINE__(1646053592270, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const tfconv = require("@tensorflow/tfjs-converter");
 const face_1 = require("./face");
 //const BLAZEFACE_MODEL_URL = 'https://tfhub.dev/tensorflow/tfjs-model/blazeface/1/default/1';
-const BLAZEFACE_MODEL_URL = "http://127.0.0.1:5000/static/tfjs-model/blazeface";
+const BLAZEFACE_MODEL_URL = "http://127.0.0.1:5000/model/blazeface";
 async function load({ maxFaces = 10, inputWidth = 128, inputHeight = 128, iouThreshold = 0.3, scoreThreshold = 0.75 } = {}) {
     const blazeface = await tfconv.loadGraphModel(BLAZEFACE_MODEL_URL, { fromTFHub: true });
     const model = new face_1.BlazeFaceModel(blazeface, inputWidth, inputHeight, maxFaces, iouThreshold, scoreThreshold);
@@ -20,8 +20,8 @@ exports.load = load;
 var face_2 = require("./face");
 exports.BlazeFaceModel = face_2.BlazeFaceModel;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./face":1643970986767}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986767, function(require, module, exports) {
+}, function(modId) {var map = {"./face":1646053592271}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1646053592271, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const tf = require("@tensorflow/tfjs-core");
@@ -286,8 +286,8 @@ class BlazeFaceModel {
 }
 exports.BlazeFaceModel = BlazeFaceModel;
 //# sourceMappingURL=face.js.map
-}, function(modId) { var map = {"./box":1643970986768}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986768, function(require, module, exports) {
+}, function(modId) { var map = {"./box":1646053592272}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1646053592272, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const tf = require("@tensorflow/tfjs-core");
@@ -309,7 +309,7 @@ exports.scaleBox = (box, factors) => {
 };
 //# sourceMappingURL=box.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1643970986766);
+return __REQUIRE__(1646053592270);
 })()
 //miniprogram-npm-outsideDeps=["@tensorflow/tfjs-converter","@tensorflow/tfjs-core"]
 //# sourceMappingURL=index.js.map

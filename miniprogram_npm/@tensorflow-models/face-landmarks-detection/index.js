@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1643970986769, function(require, module, exports) {
+__DEFINE__(1646053592273, function(require, module, exports) {
 
 /**
  * @license
@@ -101,8 +101,8 @@ function load(pkg, config) {
 }
 exports.load = load;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./mediapipe-facemesh":1643970986770,"./types":1643970986776}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986770, function(require, module, exports) {
+}, function(modId) {var map = {"./mediapipe-facemesh":1646053592274,"./types":1646053592280}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1646053592274, function(require, module, exports) {
 
 /**
  * @license
@@ -429,8 +429,8 @@ var MediaPipeFaceMesh = /** @class */ (function () {
 }());
 exports.MediaPipeFaceMesh = MediaPipeFaceMesh;
 //# sourceMappingURL=index.js.map
-}, function(modId) { var map = {"./keypoints":1643970986771,"./pipeline":1643970986772,"./uv_coords":1643970986775}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986771, function(require, module, exports) {
+}, function(modId) { var map = {"./keypoints":1646053592275,"./pipeline":1646053592276,"./uv_coords":1646053592279}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1646053592275, function(require, module, exports) {
 
 /**
  * @license
@@ -489,7 +489,7 @@ exports.MESH_ANNOTATIONS = {
 };
 //# sourceMappingURL=keypoints.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986772, function(require, module, exports) {
+__DEFINE__(1646053592276, function(require, module, exports) {
 
 /**
  * @license
@@ -883,8 +883,8 @@ var Pipeline = /** @class */ (function () {
 }());
 exports.Pipeline = Pipeline;
 //# sourceMappingURL=pipeline.js.map
-}, function(modId) { var map = {"./box":1643970986773,"./keypoints":1643970986771,"./util":1643970986774}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986773, function(require, module, exports) {
+}, function(modId) { var map = {"./box":1646053592277,"./keypoints":1646053592275,"./util":1646053592278}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1646053592277, function(require, module, exports) {
 
 /**
  * @license
@@ -968,7 +968,7 @@ function squarifyBox(box) {
 exports.squarifyBox = squarifyBox;
 //# sourceMappingURL=box.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986774, function(require, module, exports) {
+__DEFINE__(1646053592278, function(require, module, exports) {
 
 /**
  * @license
@@ -1076,7 +1076,7 @@ function xyDistanceBetweenPoints(a, b) {
 exports.xyDistanceBetweenPoints = xyDistanceBetweenPoints;
 //# sourceMappingURL=util.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986775, function(require, module, exports) {
+__DEFINE__(1646053592279, function(require, module, exports) {
 
 /**
  * @license
@@ -1567,7 +1567,7 @@ exports.UV_COORDS = [
 ];
 //# sourceMappingURL=uv_coords.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1643970986776, function(require, module, exports) {
+__DEFINE__(1646053592280, function(require, module, exports) {
 
 /**
  * @license
@@ -1599,7 +1599,7 @@ var FaceLandmarksPackage = /** @class */ (function () {
 exports.FaceLandmarksPackage = FaceLandmarksPackage;
 //# sourceMappingURL=types.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1643970986769);
+return __REQUIRE__(1646053592273);
 })()
 //miniprogram-npm-outsideDeps=["@tensorflow-models/blazeface","@tensorflow/tfjs-converter","@tensorflow/tfjs-core"]
 //# sourceMappingURL=index.js.map

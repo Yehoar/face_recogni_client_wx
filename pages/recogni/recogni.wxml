@@ -1,12 +1,13 @@
 <!--pages/recogni/recogni.wxml-->
 <view>
-  <view id="camera_view" style="width:  100%; height: 60vh;">
+  <view id="camera_view" style="width:100%; height:60vh;">
     <camera class="camera" flash="off" frame-size="small" device-position="front">
       <view class="mask"></view>
+      <canvas type="2d" id="myCanvas" style="width:100%; height:60vh;"></canvas>
     </camera>
   </view>
   <view style="text-align: center;">{{tips}}</view>
-  <button>开始检测</button>
+  <button bindtap="btn_start">{{btn_start_text}}</button>
   <view>
     <text>\n注意事项:\n</text>
     <text>1.请将人脸置于取景框中央\n</text>
