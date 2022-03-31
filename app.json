@@ -1,21 +1,23 @@
 {
-  "pages": [
-    "pages/recogni/recogni",
-    "pages/index/index"
-  ],
-  "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarTextStyle": "black"
-  },
-  "style": "v2",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents",
-  "plugins": {
-    "tfjsPlugin": {
-      "version": "0.2.0",
-      "provider": "wx6afed118d9e81df9"
+    "pages": [
+        "pages/index/index",
+        "pages/login/login",
+        "pages/register/register",
+        "pages/recogni/recogni"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTitleText": "人脸识别考试系统",
+        "navigationBarTextStyle": "black"
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents",
+    "plugins": {
+        "tfjsPlugin": {
+            "version": "0.2.0",
+            "provider": "wx6afed118d9e81df9"
+        }
     }
-  }
 }

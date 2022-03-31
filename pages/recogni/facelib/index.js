@@ -1,6 +1,14 @@
-import { LoadModel, RenderPrediction } from "./tools"
-import { AntiSpoofing } from "./facelib"
+import { AntiSpoofing } from "./antispoofing";
+import { FaceLandmarkDetecor } from "./landmarkdetector";
+import { FaceRecogni } from "./face_recogni";
+import * as Tools from "./tools";
+import * as Debug from "./debug";
+import * as upng from "./UPNG";
 
-exports.LoadModel = LoadModel;
-exports.RenderPrediction = RenderPrediction;
-exports.AntiSpoofing = AntiSpoofing;
+// exports.AntiSpoofing = AntiSpoofing;
+// exports.FaceLandmarkDetecor = FaceLandmarkDetecor;
+// exports.FaceRecogni = FaceRecogni;
+// exports.Tools = Tools;
+// exports.Debug = Debug;
+
+export { AntiSpoofing, FaceLandmarkDetecor, FaceRecogni, Tools, Debug };

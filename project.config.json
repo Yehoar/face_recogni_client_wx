@@ -12,6 +12,14 @@
             {
                 "type": "file",
                 "value": ".gitignore"
+            },
+            {
+                "type": "file",
+                "value": "package-lock.json"
+            },
+            {
+                "type": "file",
+                "value": "package.json"
             }
         ]
     },
@@ -42,7 +50,7 @@
             "disablePlugins": [],
             "outputPath": ""
         },
-        "useIsolateContext": false,
+        "useIsolateContext": true,
         "userConfirmedBundleSwitch": false,
         "packNpmManually": false,
         "packNpmRelationList": [],
@@ -51,11 +59,11 @@
         "minifyWXML": true,
         "showES6CompileOption": false,
         "useCompilerPlugins": false,
-        "ignoreUploadUnusedFiles": true
+        "ignoreUploadUnusedFiles": false
     },
     "compileType": "miniprogram",
-    "libVersion": "2.19.6",
-    "appid": "wx427bd4a2aa872c52",
+    "libVersion": "2.17.0",
+    "appid": "wx10fcf8a3c36da964",
     "projectname": "face_recogni_client",
     "debugOptions": {
         "hidedInDevtools": []

@@ -1,0 +1,19 @@
+<!-- pages/login/login.wxml -->
+<view class="content">
+    <view class="item">
+        <view class="title">账号</view>
+        <view>
+            <input bindinput="setAccount" type="number" placeholder="请输入学号" />
+        </view>
+    </view>
+    <view class="sep-line"></view>
+    <view class="item">
+        <view class="title">密码</view>
+        <view>
+            <input bindinput="setPasswd" type="text" password="{{true}}" placeholder="请输入密码" />
+        </view>
+    </view>
+    <view class="sep-line"></view>
+    <button class="btn-style" bindtap="bindBtnLogin" disabled="{{btnDisabled}}" type="{{btnType}}">登录</button>
+    <view class="register" bindtap="bindTapRegister">去注册</view>
+</view>

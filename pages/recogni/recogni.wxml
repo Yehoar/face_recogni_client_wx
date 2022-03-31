@@ -1,18 +1,47 @@
-<!--pages/recogni/recogni.wxml-->
+<!-- pages/recogni/recogni.wxml -->
 <view>
   <view id="camera_view" style="width:100%; height:60vh;">
-    <camera class="camera" flash="off" frame-size="small" device-position="front">
-      <view class="mask"></view>
-      <canvas type="2d" id="myCanvas" style="width:100%; height:60vh;"></canvas>
+    <camera class="camera" flash="off" frame-size="medium" device-position="{{devicePosition}}">
+      <!-- 人脸采集 使用圆形遮罩 -->
+      <view wx:if="{{page_type==0}}" class="circle-mask"></view>
+      <!-- 考生核验 使用矩形遮罩 -->
+      <view wx:else class="square-mask"></view>
+      <!-- <canvas type="2d" id="myCanvas" style="width:100%; height:60vh;"></canvas> -->
     </camera>
   </view>
   <view style="text-align: center;">{{tips}}</view>
-  <button bindtap="btn_start">{{btn_start_text}}</button>
-  <view>
-    <text>\n注意事项:\n</text>
-    <text>1.请将人脸置于取景框中央\n</text>
-    <text>2.请摘下眼镜、口罩等遮挡物\n</text>
-    <text>3.请在光线适中的环境下进行检测\n</text>
-    <text>4.动作不要太快\n</text>
+  <!-- 人脸采集区块 -->
+  <view wx:if="{{page_type==0}}">
+    <button bindtap="bindBtnStart">{{btn_start_text}}</button>
+    <view class="tips-box">
+      <text>\n注意事项:\n</text>
+      <text>1.请将人脸置于取景框中央\n</text>
+      <text>2.请摘下眼镜、口罩等遮挡物\n</text>
+      <text>3.请在光线适中的环境下进行检测\n</text>
+      <text>4.动作不要太快\n</text>
+    </view>
+  </view>
+  <!-- 考生识别区块 -->
+  <view wx:else>
+    <view class="card-box">
+      <view class="card-image">
+        <image src="{{preview}}" />
+      </view>
+      <view class="info-box">
+        <!-- 考生核验 -->
+        <text>学号: {{stuInfo.stuId}} \n</text>
+        <text>姓名: {{stuInfo.name}} \n</text>
+        <text>学院: {{stuInfo.college}} \n</text>
+        <text>专业: {{stuInfo.major}} \n</text>
+      </view>
+    </view>
+    <view class="button-box">
+      <button class="button-style" bindtap="bindBtnConfirm" disabled="{{btnConfirmDisable}}">
+        确定
+      </button>
+      <button class="button-style" bindtap="bindBtnChange" disabled="{{btnChangeDisable}}">
+        取消
+      </button>
+    </view>
   </view>
 </view>

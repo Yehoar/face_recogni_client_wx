@@ -4,21 +4,80 @@ page {
   background-color: greenyellow;
 }
 
-.mask {
+.camera {
+  width: 100%;
+  height: 100%;
+  border: 2vh;
+}
+
+.circle-mask {
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  border: 3px solid #ffc107;
+  border: 3px solid #ff8c00;
   border-radius: 100%;
-  width: 80%;
-  height: 80%;
+  width: 85%;
+  height: 85%;
   margin: auto;
   position: absolute;
   box-shadow: 0 0 0 2000px rgba(173, 255, 47, 1.0);
 }
 
-.camera {
-  width: 100%;
-  height: 100%;
+.square-mask {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 4px solid #ff8c00;
+  border-radius: 10%;
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  position: absolute;
+  box-shadow: 0 0 0 2000px rgba(173, 255, 47, 1.0);
+}
+
+.tips-box {
+  top: 2%;
+  left: 2%;
+  right: 2%;
+  bottom: 2%;
+  margin: 20px;
+}
+
+/* 识别信息展示 */
+.card-box {
+  display: flex;
+  margin: 16px 20px;
+}
+
+/* 左边图片 */
+.card-image {
+  border: 20px;
+}
+
+.card-image image {
+  width: 100px;
+  height: 100px;
+  border-radius: 5%;
+  background-color: aliceblue;
+}
+
+.info-box {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.button-box {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+  justify-content: space-around;
+}
+
+.button-style {
+  width: 120px !important;
+  border: 20px;
+  border-radius: 8%;
 }

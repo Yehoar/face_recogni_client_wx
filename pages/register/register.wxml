@@ -1,0 +1,32 @@
+<!-- pages/logon/logon.wxml -->
+<view>
+    <form bindsubmit="submit">
+        <view class="item">
+            <view class="title">学号</view>
+            <input type="number" name="userId" value="{{userId}}" bindinput="setUserId" maxlength="32" placeholder="请输入学号" />
+        </view>
+        <view class="item">
+            <view class="title">姓名</view>
+            <input type="text" name="userName" maxlength="32" placeholder="请输入姓名" />
+        </view>
+        <view class="item">
+            <view class="title">学院</view>
+            <input type="text" name="college" maxlength="32" placeholder="请输入学院名称" />
+        </view>
+        <view class="item">
+            <view class="title">专业</view>
+            <input type="text" name="major" maxlength="32" placeholder="请输入专业名称" />
+        </view>
+        <view class="item">
+            <view class="title">班级</view>
+            <input type="number" name="clazz" value="{{clazz}}" bindinput="setClazz" maxlength="2" placeholder="请输入班级" />
+        </view>
+        <view class="item">
+            <view class="title">密码</view>
+            <input type="text" name="passwd" password="{{!visable}}" placeholder="请输入密码(8~16位)" maxlength="16" style="width: 68%" />
+            <switch type="switch" bindchange="setVisable" />
+        </view>
+        <view class="sep-line"></view>
+        <button form-type="submit">注册</button>
+    </form>
+</view>

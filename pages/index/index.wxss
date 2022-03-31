@@ -1,19 +1,49 @@
 /**index.wxss**/
-.userinfo {
+page {
+  height: 100%;
+  background-color: whitesmoke;
+}
+
+.container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.title {
+  margin: 25px;
+  padding-bottom: 60px;
 }
 
-.usermotto {
-  margin-top: 200px;
+.button-style {
+  width: 80%;
+  height: 55px;
+  margin: 10px;
+  border-radius: 2%;
+  border: 0 0;
+  background-color: white;
+  border: 2px solid black;
+}
+
+.icon {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 15px;
+
+}
+
+.icon image {
+  width: 25px;
+  height: 25px;
+  margin: 5px 5px;
+  border: 0 0;
+  padding: none;
+}
+
+.icon text {
+  margin: 5px 5px;
 }
