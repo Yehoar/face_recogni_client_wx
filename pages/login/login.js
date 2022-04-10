@@ -6,7 +6,7 @@ Page({
      * 页面的初始数据
      */
     data: {
-        account: "",
+        userId: "",
         passwd: "",
         btnDisabled: true,
         btnType: "default",
@@ -15,7 +15,7 @@ Page({
     /**
      * 生命周期函数--监听页面加载
      */
-    onLoad: function (options) {},
+    onLoad: function (options) { },
 
     /**
      * 生命周期函数--监听页面初次渲染完成
@@ -24,12 +24,12 @@ Page({
 
     },
 
-    setAccount(e) {
+    setUserId(e) {
         var content = e.detail.value;
         if (content != "") {
-            this.setData({ btnDisabled: false, btnType: "primary", account: content });
+            this.setData({ btnDisabled: false, btnType: "primary", userId: content });
         } else {
-            this.setData({ btnDisabled: true, btnType: "default", account: "" });
+            this.setData({ btnDisabled: true, btnType: "default", userId: "" });
         }
     },
 
@@ -43,13 +43,13 @@ Page({
     },
 
     bindBtnLogin() {
-        const account = this.data["account"];
+        const userId = this.data["userId"];
         const passwd = this.data["passwd"];
-        if (account < 11 || passwd.length < 8) {
-            wx.showToast({ title: '请正确填写账号密码', });
+        if (userId.length < 6 || passwd.length < 8) {
+            wx.showToast({ title: '账号密码格式错误', icon: "error" });
             return;
         }
-        request.api_Login({ account: account, passwd: passwd });
+        request.api_Login({ userId: userId.toString(), passwd: passwd.toString() });
     },
 
     bindTapRegister() {

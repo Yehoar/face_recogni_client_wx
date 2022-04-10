@@ -1,0 +1,80 @@
+<!-- pages/exam/exam.wxml -->
+<view>
+    <view class="view-box" bindtap="newButtonTap">
+        <text style="text-align: center">+ 新建</text>
+    </view>
+    <!-- 考试列表 -->
+    <view>
+        <view wx:if="{{examList.length<=0}}" class="view-box">
+            <text>未查询到相关记录</text>
+        </view>
+        <mp-cells>
+            <view wx:for="{{examList}}" wx:key="uuid">
+                <mp-slideview show="{{false}}" buttons="{{item.slideButtons}}" bindbuttontap="slideButtonTap">
+                    <mp-cell>
+                        <view style="border:1rpx solid black">
+                            <view>考试编号: {{item.uuid}}</view>
+                            <view>考试科目: {{item.subject}}</view>
+                            <view>考场信息: {{item.examRoom}}</view>
+                            <view>考试时间: {{item.time}}</view>
+                            <view>考生人数: {{item.nums}}</view>
+                        </view>
+                        <view slot="footer">
+                            <image class="slide-left" src="../../resources/icon_left.png" />
+                        </view>
+                    </mp-cell>
+                </mp-slideview>
+            </view>
+        </mp-cells>
+    </view>
+    <!-- 新增考试 -->
+    <view>
+        <mp-halfScreenDialog show="{{showHSD}}" closabled="{{true}}">
+            <view slot="title">新建考试</view>
+            <view slot="desc">
+                <mp-toptips msg="{{error}}" type="error" show="{{error}}"></mp-toptips>
+                <mp-form id="form" rules="{{rules}}" models="{{formData}}">
+                    <mp-cells>
+                        <label>
+                            <mp-cell prop="subject" title="科目">
+                                <input bindinput="formInputChange" data-field="subject" class="weui-input" placeholder="请输入考试科目" />
+                            </mp-cell>
+                        </label>
+                        <label>
+                            <mp-cell prop="examRoom" title="考场">
+                                <input bindinput="formInputChange" data-field="examRoom" class="weui-input" placeholder="请输入考场信息" />
+                            </mp-cell>
+                        </label>
+                        <label>
+                            <mp-cell prop="date" title="考试日期">
+                                <picker data-field="date" mode="date" value="{{date}}" start="2022-01-01" end="2099-12-31" bindchange="bindDateChange">
+                                    <view class="weui-input">{{date}}</view>
+                                </picker>
+                            </mp-cell>
+                        </label>
+                        <label>
+                            <mp-cell prop="beginTime" title="开始时间">
+                                <picker data-field="beginTime" mode="time" value="{{beginTime}}" start="00:00" end="23:59" bindchange="bindDateChange">
+                                    <view class="weui-input">{{beginTime}}</view>
+                                </picker>
+                            </mp-cell>
+                        </label>
+                        <label>
+                            <mp-cell prop="endTime" title="结束时间">
+                                <picker data-field="endTime" mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="bindDateChange">
+                                    <view class="weui-input">{{endTime}}</view>
+                                </picker>
+                            </mp-cell>
+                        </label>
+                        <label>
+                            <mp-cell prop="nameList" title="考试名单">
+                                <input placeholder="+ 选择CSV/XLSX文件" type="text" disabled="true" value="{{file}}" bindtap="chooseFile" />
+                            </mp-cell>
+                        </label>
+                    </mp-cells>
+                    <button type="primary" class="weui-btn" bindtap="submitForm">提交</button>
+                </mp-form>
+            </view>
+        </mp-halfScreenDialog>
+    </view>
+</view>

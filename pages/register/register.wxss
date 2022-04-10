@@ -2,7 +2,7 @@
 page {
     margin-top: 45px;
     height: 100%;
-    background-color: #f2f2f2;
+    background-color: #F8F8FF;
 }
 
 .sep-line {

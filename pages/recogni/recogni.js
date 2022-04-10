@@ -5,8 +5,7 @@ const facelib = require("./facelib/index");
 const AntiSpoofing = facelib.AntiSpoofing;
 const FaceRecogni = facelib.FaceRecogni;
 const Tools = facelib.Tools;
-const request = require("../../http/request");
-const app = getApp();
+
 
 Page({
     page_type: 0,
@@ -18,20 +17,21 @@ Page({
     running: false,
     imgSrc: "../../resources/renlianBI.png",
     busy: false,
+    curId: null,
 
     /**
      * 页面的初始数据
      */
     data: {
         page_type: 0,
-
         tips: "",
         btn_start_text: "开始检测",
         devicePosition: "front",
-        stuInfo: { name: "-", stuId: "-", college: "-", "major": "-" },
+        stuInfo: { name: "-", stuId: "-", department: "-", "major": "-" },
         preview: "../../resources/renlianBI.png",
         btnConfirmDisable: true,
         btnChangeDisable: true,
+        examList: [],
     },
     /**
      * 生命周期函数--监听页面加载
@@ -42,10 +42,9 @@ Page({
             options["page_type"] = "recogni";
         }
 
-        wx.showLoading({ title: '正在加载组件' });
         if (options["page_type"] === "recogni") {
             wx.setNavigationBarTitle({ title: "考生识别" });
-            this.setData({ page_type: 1, tips: "准备中", devicePosition: "front" });
+            this.setData({ page_type: 1, tips: "准备中", devicePosition: "back" });
             this.page_type = 1;
             this.recogni = new FaceRecogni();
         } else {
@@ -57,23 +56,37 @@ Page({
     },
 
     onReady: async function () {
+        wx.showLoading({ title: '正在加载组件', mask: true });
+        let model = null;
         if (this.page_type == 0) {
             this.initAntiSpoofing();
+            model = this.antiSpoofing;
         } else {
             this.initFaceRecogni();
+            model = this.recogni;
         }
-        wx.hideLoading();
+        let waitLoading = setInterval(  // 等待加载
+            () => {
+                if (model != null && model.isReady) {
+                    clearInterval(waitLoading);
+                    wx.hideLoading();
+                }
+            }, 800
+        );
     },
 
     /**
      * 生命周期函数--监听页面卸载
      */
     onUnload: function () {
-        if (this.antiSpoofing !== undefined && this.antiSpoofing !== null) {
+        if (this.listener != null) {
+            this.listener.stop();
+        }
+        if (this.antiSpoofing != undefined && this.antiSpoofing != null) {
             this.antiSpoofing.dispose();
             console.debug("dispose antiSpoofing");
         }
-        if (this.recogni !== undefined && this.recogni !== null) {
+        if (this.recogni != undefined && this.recogni != null) {
             this.recogni.dispose();
             console.debug("dispose recogni");
         }
@@ -102,7 +115,7 @@ Page({
 
         this.listener = camera_ctx.onCameraFrame((frame) => {
             count += 1;
-            if (count <= skip) { return; }
+            if (count <= skip || !that.antiSpoofing.isReady) { return; }
             count = 0;
             //console.time();
             that.antiSpoofing.detect(frame).then((ret) => {
@@ -134,7 +147,7 @@ Page({
         };
         switch (result[0]) {
             case AntiSpoofing.status.INIT: {
-                this.setData({ tips: "初始化中，请稍候..." });
+                this.setData({ tips: "初始化中，请稍候" });
                 break;
             }
             case AntiSpoofing.status.READY: {
@@ -166,7 +179,7 @@ Page({
     bindBtnStart: function () {
         this.running = !this.running;
         if (this.running) {  // 按下开始
-            this.setData({ tips: "开始识别" });
+            this.setData({ tips: "准备中" });
             this.antiSpoofing.reset();
             this.listener.start();
             this.setData({ btn_start_text: "停止检测" });
@@ -182,11 +195,12 @@ Page({
      */
     bindBtnConfirm: function () {
         if (this.listener != null && this.busy) {
+            this.setStatus(this.curId, "已识别");
             this.setData({ tips: "检测中", btnConfirmDisable: true, btnChangeDisable: true });
             this.resetInfo();
             setTimeout(() => {
                 this.busy = false;
-            }, 1500);
+            }, 1200);
         }
     },
 
@@ -203,9 +217,59 @@ Page({
         }
     },
 
+    /**
+     * 点击事件：导出
+     */
+    bindTapExport: function (e) {
+        const examList = this.data.examList;
+        if (examList == null || examList == undefined || examList.length <= 0) {
+            return;
+        }
+        wx.showLoading({ title: "处理中", mask: true });
+        let rows = [];
+        let columns = ["学号", "姓名", "学院", "专业", "班级", "状态"].join(",");
+        rows.push(columns);
+        for (let item of examList) {
+            let row = [
+                item["userId"],
+                item["name"],
+                item["department"],
+                item["major"],
+                item["clazz"],
+                item["isRecogni"] + item["updateTime"]
+            ].join(",");
+            rows.push(row);
+        }
+        rows = rows.join("\n");
+        try {
+            const fs = wx.getFileSystemManager()
+            const filepath = `${wx.env.USER_DATA_PATH}/tmp_${new Date().getTime()}`;
+            const res = fs.writeFileSync(filepath, rows, 'utf8');
+            console.debug(res);
+            wx.hideLoading();
+            wx.showModal({
+                content: "确认导出",
+                success: (res) => {
+                    if (res.confirm) {
+                        wx.shareFileMessage({
+                            filePath: filepath,
+                            fileName: `ExamList-${Tools.formatTime()}.csv`,
+                            fail: console.error,
+                        })
+                    } 
+                }
+            });
+        } catch (e) {
+            console.error(e);
+            wx.showToast({ title: "导出失败" });
+        }
+    },
+
     initFaceRecogni: function () {
         //模型
         this.recogni.load();
+        // 尝试加载数据
+        this.loadExamList();
         //相机
         const camera_ctx = wx.createCameraContext();
         this.setData({ tips: "准备中..." });
@@ -214,21 +278,17 @@ Page({
         this.listener = camera_ctx.onCameraFrame((frame) => {
             // console.log(frame.width, frame.height);
             count += 1;
-            if (count <= skip) { return; } //间隔采样
+            if (count <= skip || this.recogni == null || !this.recogni.isReady) { return; } //间隔采样
             // console.time();
             count = 0;
             if (!this.busy) {
                 this.busy = true;
-                const image = {
-                    data: new Uint8Array(frame.data),
-                    width: frame.width,
-                    height: frame.height,
-                };
+                const image = { data: new Uint8Array(frame.data), width: frame.width, height: frame.height, };
 
                 this.recogni.detect(image).then((ret) => {
                     if (ret[0] == true) {  // 检测到人脸
                         // console.debug(ret);
-                        wx.showLoading({ title: "正在识别" })
+                        wx.showLoading({ title: "正在识别", mask: true });
                         let [_, faceLandmark] = ret;
                         let [embedding, face] = this.recogni.predict({
                             image: image,
@@ -238,28 +298,29 @@ Page({
                         });
                         let png = Tools.frameToPng(face)
                         // console.debug(embedding)
-                        request.api_Recogni({
-                            embedding: embedding.buffer,
-                            im: face.data
-                        }).then((value) => {
-                            console.debug(value);
-                            if (value.status_code !== "success") {
-                                value = null;
-                            } else {
-                                let info = value.info;
-                                if (info instanceof String) {
-                                    value = JSON.stringify(info);
-                                } else {
-                                    value = info;
-                                }
-                            }
-                            this.setInfo(value);
-                        }, (res) => {
-                            console.debug(res);
-                            this.setInfo();
-                        });
-                        this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
-                        wx.hideLoading();
+                        // 本地查询
+                        let person = null;
+                        person = this.recogni.findInLocalGallery(embedding);
+                        if (person != null) {
+                            console.debug("findInLocalGallery")
+                            this.setInfo(person);
+                            this.curId = person.userId;
+                            this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
+                            wx.hideLoading();
+                        } else {
+                            // 远程查询
+                            this.recogni.findInRemoteGallery(embedding, face).then((data) => {
+                                console.debug("findInRemoteGallery")
+                                this.setInfo(data);
+                                this.curId = data == null ? "" : data.userId;
+                                this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
+                            }).catch((res) => {
+                                console.debug(res);
+                                this.curId = "";
+                                this.setInfo();
+                                this.setData({ preview: this.imgSrc, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
+                            }).finally(() => { wx.hideLoading(); });
+                        }
                     } else {
                         this.setData({ tips: ret[1] });
                         this.busy = false;
@@ -278,19 +339,19 @@ Page({
             stuInfo = {
                 name: "未查询到相关信息",
                 stuId: "未查询到相关信息",
-                college: "未查询到相关信息",
+                department: "未查询到相关信息",
                 "major": "未查询到相关信息"
             };
         } else {
             stuInfo = {
-                name: info.userName,
+                name: info.name,
                 stuId: info.userId,
-                college: info.college,
-                "major": "未查询到相关信息"
+                department: info.department,
+                major: "未查询到相关信息"
             };
 
-            if (info.college == "None") {
-                stuInfo.college = "未查询到相关信息";
+            if (info.department == "None") {
+                stuInfo.department = "未查询到相关信息";
             }
 
             if (info.major == "None" || info.clazz == "None") {
@@ -306,9 +367,101 @@ Page({
         let stuInfo = {
             name: "-",
             stuId: "-",
-            college: "-",
-            "major": "-"
+            department: "-",
+            major: "-"
         };
         this.setData({ preview: this.imgSrc, stuInfo: stuInfo });
-    }
+    },
+
+    /**
+     * 从缓存中加载考生名单
+     */
+    loadExamList: function () {
+        try {
+            const prefix = "examList-";
+            const res = wx.getStorageInfoSync();
+            let examList = null;
+            for (let key of res.keys) {
+                if (key.substr(0, 9) == prefix) {
+                    examList = wx.getStorageSync(key);
+                    break;
+                }
+            }
+            if (examList == null || examList == "") {
+                return;
+            }
+            examList = JSON.parse(examList);  // [{userId,name,department,major,clazz,embd$ }]
+            // 初始化本地编码库
+            this.recogni.setGallery(examList);
+
+            // 拷贝数据并初始化页面
+            let tmp = [];
+            for (let item of examList) {
+                let obj = {};
+                for (let key in item) {
+                    if (!key.includes("embd")) {
+                        obj[key] = item[key];
+                    }
+                }
+                obj["slideButtons"] = this.createSlideButton(item["userId"]);
+                obj["isRecogni"] = "未识别";
+                obj["updateTime"] = "";
+                tmp.push(obj);
+            }
+            examList = tmp;
+            this.setData({ examList: examList });
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    /**
+     * 创建滑动视图的按钮
+     */
+    createSlideButton(userId) {
+        return [
+            { text: '确认', data: userId },
+            { text: '清除', data: userId, type: 'warn' }
+        ];
+    },
+    /**
+    * 绑定按钮事件
+    * @param {Object} e 
+    */
+    slideButtonTap: function (e) {
+        // console.debug('slide button tap', e.detail)
+        let index = e.detail["index"];
+        let userId = e.detail["data"];
+
+        if (index == 0) {  //确认
+            this.setStatus(userId, "已识别");
+        } else if (index == 1) {  //清除
+            // 按钮2
+            this.setStatus(userId, "未识别");
+        }
+    },
+
+    /**
+     * 确认记录
+     * @param {*} userId 
+     */
+    setStatus: function (userId, status) {
+        if (userId == undefined || userId == "") {
+            return;
+        }
+        let examList = this.data.examList;
+        for (let item of examList) {
+            if (item.userId == userId) {
+                item.isRecogni = status;
+                if (status == "未识别") {
+                    item.updateTime = "";
+                } else {
+                    item.updateTime = Tools.formatTime();
+                }
+                break;
+            }
+        }
+        this.setData({ examList: examList });
+    },
+
 })

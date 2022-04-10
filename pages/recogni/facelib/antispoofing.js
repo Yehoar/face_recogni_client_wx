@@ -35,10 +35,10 @@ export class AntiSpoofing {
         this.event = null;  // String 保存当前的检测事件
         this.step = 8;  // 辅助用的状态计数器
         this.flag = false;  // 检测是否完成，第二次检测
-        this.isWarmUp = false;
         this.frames = null;  // Array 保存图片
-        this.detector = null;  // 人脸关键点检测器
+        this.detector = null;  // 人脸检测+识别
         this.state = AntiSpoofing.status.INIT;  // 全局的检测状态
+        this.isReady = false;
     }
 
     /**
@@ -185,8 +185,12 @@ export class AntiSpoofing {
         if (this.detector == null) {
             this.detector = new FaceRecogni();
             await this.detector.load({ save: true, load_recogni: load_recogni });
-        }
+            this.isReady = this.detector.isReady;
+            if (this.isReady) {
+                console.debug("AntiSpoofing Ready!!!");
+            }
 
+        }
     }
 
     /**
@@ -338,15 +342,15 @@ export class AntiSpoofing {
         // 判断是否同一个人
         let dist = Tools.calculateAllDistance(embeddings);
         let issame = Tools.allLessEqual(dist, this.detector.threshold);
-        console.debug(dist, issame);
-
+        // console.debug(dist, issame);
+        console.debug(dist);
         if (issame) {
             // 封装数据
             let data = { nums: embeddings.length };
             for (let idx in embeddings) {
                 data[`embedding${idx}`] = Float32Array.from(embeddings[idx].arraySync()).buffer;
             }
-            request.api_Collect(data, false).then((value) => {
+            request.api_Collect(data).then((value) => {
                 console.debug(value);
                 if (value.status_code == "success") {
                     this.state = AntiSpoofing.status.SUCCESS;

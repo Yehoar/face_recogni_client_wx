@@ -1,0 +1,37 @@
+/* pages/exam/exam.wxss */
+
+.view-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    border: 2rpx solid black;
+}
+
+.weui-slidecells {
+    margin: 8px;
+}
+
+.weui-slidecell {
+    background-color: var(--weui-BG-2);
+    border-radius: 8px;
+    padding: 26px;
+    line-height: 1.4;
+    font-size: 17px;
+}
+
+.slide-left {
+    width: 32rpx;
+    height: 32rpx;
+}
+
+.button-box {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    justify-content: space-around;
+}
+
+.weui-half-screen-dialog .weui-half-screen-dialog__ft {
+    display: none !important;
+}

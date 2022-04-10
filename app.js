@@ -1,5 +1,4 @@
 // app.js
-
 const fetchWechat = require('fetch-wechat');
 const tf = require('@tensorflow/tfjs-core');
 const webgl = require('@tensorflow/tfjs-backend-webgl');
@@ -10,16 +9,19 @@ const request = require("./http/request");
 
 App({
   onLaunch() {
-    wx.showLoading({ title: '正在初始化' });
+    wx.showLoading({ title: '正在初始化', mask: true });
     // 初始化
     this.init();
-    // 创建会话
-    request.api_InitSession().then(() => { wx.hideLoading() }, (res) => {
-      wx.hideLoading();
-      wx.showToast(res);
-    });
     //测试
     this.test();
+    // 创建会话
+    request.api_InitSession().then(
+      () => {
+        wx.hideLoading();
+      }, (res) => {
+        wx.hideLoading();
+        wx.showToast(res);
+      }).finally(() => { this.globalData.ready = true; });
   },
 
   init() {
@@ -52,9 +54,7 @@ App({
   },
 
   globalData: {
-    cookie: "",
     user: "",
-    clientKey: "",
     ready: false,
   }
 })

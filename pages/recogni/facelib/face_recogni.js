@@ -23,6 +23,8 @@ export class FaceRecogni {
         this.CacheFlag = "RecogniModelCache";
         this.embedding_length = EMBEDDING_LENGTH;
         this.threshold = THRESHOLD;
+        this.isReady = false;
+        this.gallery = null;
     }
 
     async load({ save = true, load_recogni = true } = {}) {
@@ -52,7 +54,11 @@ export class FaceRecogni {
                 this.model = await tfconv.loadGraphModel(this.server_model_path);
                 if (save) { this.saveToLocal(); }
             }
-            this.canRecogni = this.model !== null;
+            this.canRecogni = this.model != null;
+            this.isReady = this.canDetect && (load_recogni == this.canRecogni);
+            if (this.isReady) {
+                console.debug("FaceRecogni Ready!!!");
+            }
         }
     }
 
@@ -67,12 +73,27 @@ export class FaceRecogni {
         }
     }
 
+    /**
+     * 清理tensor
+     */
     dispose() {
         if (this.model != null) {
             this.model.dispose();
+            this.model = null;
         }
         if (this.detector != null) {
             this.detector.dispose();
+            this.detector = null;
+        }
+        if (this.gallery != null) {
+            for (let item of this.gallery) {
+                for (let key in item) {
+                    if (key.includes("embd") && typeof (item[key]) != "string") {
+                        item[key].dispose();
+                    }
+                }
+            }
+            this.gallery = null;
         }
     }
 
@@ -166,6 +187,87 @@ export class FaceRecogni {
         }
 
         return ret;
+    }
+
+    /**
+     * 根据考生数据初始化Gallery
+     * @param {*} examList  // [{userId,name,department,major,clazz,embd$ }]
+     * @returns 
+     */
+    setGallery(examList) {
+        if (examList == null || examList == "") {
+            return false;
+        }
+        let gallery = [];
+        for (let student of examList) {
+            let obj = {};
+            for (let key in student) {
+                let value = student[key];
+                if (key.includes("embd") && value != "") {
+                    value = wx.base64ToArrayBuffer(value);
+                    value = new Float32Array(value); // [128]
+                    // console.log(value)
+                    value = tf.tensor1d(value);
+                }
+                obj[key] = value;
+            }
+            gallery.push(obj);
+        }
+        if (Object.keys(gallery).length > 0) {
+            this.gallery = gallery;
+        }
+    }
+
+    /**
+     * 从本地数据中查询
+     * @param {*} query Float32Array
+     */
+    findInLocalGallery(query) {
+        if (this.gallery == null) {
+            return null;
+        }
+        query = tf.tensor1d(query);
+        for (let item of this.gallery) {
+            for (let key in item) {
+                if (!key.includes("embd")) {
+                    continue;
+                }
+                let embedding = item[key];
+                if (typeof (embedding) == "string") {
+                    continue;
+                }
+                let dist = Tools.calculatePairDistance(query, embedding);
+                if (dist < this.threshold) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 向服务器查询
+     * @param {*} query  Float32Array
+     * @param {*} face image
+     */
+    findInRemoteGallery(query, face) {
+        return request.api_Recogni({
+            embedding: query.buffer,
+            im: face.data
+        }).then((data) => {
+            console.debug(data);
+            if (data.status_code !== "success") {
+                data = null;
+            } else {
+                let info = data.info;
+                if (typeof (info) == "string") {
+                    data = JSON.parse(info);
+                } else {
+                    data = info;
+                }
+            }
+            return Promise.resolve(data);
+        })
     }
 
 }

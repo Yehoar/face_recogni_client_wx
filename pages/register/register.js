@@ -32,18 +32,18 @@ Page({
 
     submit: function (e) {
         let user = {};
-        user.userId = e.detail.value.userId;
-        user.userName = e.detail.value.userName;
-        user.college = e.detail.value.college;
-        user.major = e.detail.value.major;
+        user.userId = e.detail.value.userId.toString();
+        user.name = e.detail.value.name.toString();
+        user.department = e.detail.value.department.toString();
+        user.major = e.detail.value.major.toString();
         user.clazz = e.detail.value.clazz;
-        user.passwd = e.detail.value.passwd;
+        user.passwd = e.detail.value.passwd.toString();
 
         if (user.userId == "") {
             wx.showToast({ title: "请输入学号", icon: "none" });
         } else if (user.userName == "") {
             wx.showToast({ title: "请输入姓名", icon: "none" });
-        } else if (user.college == "") {
+        } else if (user.department == "") {
             wx.showToast({ title: "请输入学院", icon: "none" });
         } else if (user.major == "") {
             wx.showToast({ title: "请输入专业", icon: "none" });
@@ -53,8 +53,8 @@ Page({
             wx.showToast({ title: "密码长度必须在8~16位之间", icon: "none" });
         } else {
             // 其他合法性检查
-            if (!user.college.includes("学院")) {
-                user.college = user.college + "学院";
+            if (!user.department.includes("学院")) {
+                user.department = user.department + "学院";
             }
 
             let major = user.major;

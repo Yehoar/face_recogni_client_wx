@@ -3,7 +3,7 @@
     <view class="item">
         <view class="title">账号</view>
         <view>
-            <input bindinput="setAccount" type="number" placeholder="请输入学号" />
+            <input bindinput="setUserId" type="number" placeholder="请输入学号" />
         </view>
     </view>
     <view class="sep-line"></view>

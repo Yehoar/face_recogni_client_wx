@@ -4,37 +4,37 @@
     <text>欢迎使用人脸识别考试系统</text>
   </view>
   <view>
-    <button class="button-style" bindtap="bindBtnCollect">
-      <view class="icon">
-        <image src="../../resources/collect.png" />
-        <text>人脸采集</text>
-      </view>
-    </button>
-    <button class="button-style" bindtap="bindBtnRecogni">
-      <view class="icon">
-        <image src="../../resources/recogni.png" />
-        <text>考生识别</text>
-      </view>
-    </button>
-    <button class="button-style">
-      <view class="icon">
-        <image src="../../resources/examInfo.png" />
-        <text>考试管理</text>
-      </view>
-    </button>
-    <button class="button-style">
-      <view class="icon">
-        <image src="../../resources/sysmanage.png" />
-        <text>系统管理</text>
-      </view>
-    </button>
-    <view wx:if="{{isLogin}}">
+    <block wx:if="{{can_collect}}">
+      <button class="button-style" bindtap="bindBtnCollect">
+        <view class="icon">
+          <image src="../../resources/collect.png" />
+          <text>人脸采集</text>
+        </view>
+      </button>
+    </block>
+    <block wx:if="{{can_recogni}}">
+      <button class="button-style" bindtap="bindBtnRecogni">
+        <view class="icon">
+          <image src="../../resources/recogni.png" />
+          <text>考生识别</text>
+        </view>
+      </button>
+    </block>
+    <block wx:if="{{can_manage}}">
+      <button class="button-style" bindtap="bindBtnExamManage">
+        <view class="icon">
+          <image src="../../resources/examInfo.png" />
+          <text>考试管理</text>
+        </view>
+      </button>
+    </block>
+    <block wx:if="{{can_logout}}">
       <button class="button-style" bindtap="bindBtnLogout">
         <view class="icon">
           <image src="../../resources/logout.png" />
           <text>退出登录</text>
         </view>
       </button>
-    </view>
+    </block>
   </view>
 </view>

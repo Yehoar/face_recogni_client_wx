@@ -216,16 +216,18 @@ export function tensorToImage(tensor, width, height) {
 
 /**
  * 计算两个Embedding间的l2距离
- * @param {tf.Tensor2d} embedding1
- * @param {tf.Tensor2d} embedding2
- * @returns {tf.Tensor}
+ * @param {} embedding1
+ * @param {} embedding2
+ * @returns {number}
  */
 export function calculatePairDistance(embedding1, embedding2) {
     const dist = tf.tidy(() => {
         let norm = embedding1.sub(embedding2).norm(2, 0, false); //[distance]
         return norm.squeeze();
     });
-    return dist;
+    let val = dist.dataSync();
+    dist.dispose()
+    return val;
 }
 
 /**
@@ -236,7 +238,6 @@ export function calculatePairDistance(embedding1, embedding2) {
 export function calculateAllDistance(embeddings) {
     let len = embeddings.length;
     let dist = [];
-
     tf.tidy(() => {
         for (let i = 0; i < len - 1; ++i) {
             for (let j = i + 1; j < len; ++j) {
@@ -258,11 +259,13 @@ export function allLessEqual(array, thresh) {
     return true;
 }
 
-/**
- * 从人脸编码库中查询
- * @param {*} query 
- * @param {*} gallery 
- */
-export function findInGallery(query, gallery) {
-
+export function formatTime() {
+    let d = new Date();
+    let year = d.getFullYear();
+    let month = d.getMonth() + 1;
+    let day = d.getDate();
+    let hour = d.getHours();
+    let minute = d.getMinutes();
+    let second = d.getSeconds();
+    return `${year}-${month}-${day}-${hour}:${minute}:${second}`;
 }

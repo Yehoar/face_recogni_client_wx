@@ -1,7 +1,8 @@
 {
     "description": "项目配置文件",
     "packOptions": {
-        "ignore": [{
+        "ignore": [
+            {
                 "type": "folder",
                 "value": ".vscode"
             },
@@ -12,6 +13,10 @@
             {
                 "type": "file",
                 "value": ".gitignore"
+            },
+            {
+                "type": "file",
+                "value": "readme.md"
             },
             {
                 "type": "file",
@@ -62,7 +67,7 @@
         "ignoreUploadUnusedFiles": false
     },
     "compileType": "miniprogram",
-    "libVersion": "2.17.0",
+    "libVersion": "2.23.3",
     "appid": "wx10fcf8a3c36da964",
     "projectname": "face_recogni_client",
     "debugOptions": {

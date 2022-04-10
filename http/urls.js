@@ -10,6 +10,10 @@ module.exports = {
     URL_LOGIN: `${URL_SERVER}/login`,
     URL_LOGOUT: `${URL_SERVER}/logout`,
     URL_RECOGNI: `${URL_SERVER}/recogni`,
+    URL_CREATEEXAM: `${URL_SERVER}/create_exam`,
+    URL_GETEXAMLIST: `${URL_SERVER}/get_exam_list`,
+    URL_DELEXAM: `${URL_SERVER}/del_exam`,
+    URL_LOADEXAMLIST:  `${URL_SERVER}/load_exam_data`,
 
     /** Debug */
     URL_DEBUG: `${URL_SERVER}/debug/show_request`
