@@ -17,7 +17,7 @@ Page({
     running: false,
     imgSrc: "../../resources/renlianBI.png",
     busy: false,
-    curId: null,
+    cur: null,
 
     /**
      * 页面的初始数据
@@ -195,7 +195,7 @@ Page({
      */
     bindBtnConfirm: function () {
         if (this.listener != null && this.busy) {
-            this.setStatus(this.curId, "已识别");
+            this.setStatus(this.cur, "已识别");
             this.setData({ tips: "检测中", btnConfirmDisable: true, btnChangeDisable: true });
             this.resetInfo();
             setTimeout(() => {
@@ -227,7 +227,7 @@ Page({
         }
         wx.showLoading({ title: "处理中", mask: true });
         let rows = [];
-        let columns = ["学号", "姓名", "学院", "专业", "班级", "状态"].join(",");
+        let columns = ["学号", "姓名", "学院", "专业", "班级", "状态", "人脸数据"].join(",");
         rows.push(columns);
         for (let item of examList) {
             let row = [
@@ -236,7 +236,8 @@ Page({
                 item["department"],
                 item["major"],
                 item["clazz"],
-                item["isRecogni"] + item["updateTime"]
+                item["isRecogni"] + item["updateTime"],
+                item["im"]
             ].join(",");
             rows.push(row);
         }
@@ -256,7 +257,7 @@ Page({
                             fileName: `ExamList-${Tools.formatTime()}.csv`,
                             fail: console.error,
                         })
-                    } 
+                    }
                 }
             });
         } catch (e) {
@@ -304,7 +305,7 @@ Page({
                         if (person != null) {
                             console.debug("findInLocalGallery")
                             this.setInfo(person);
-                            this.curId = person.userId;
+                            this.cur = { userId: person.userId, im: png };
                             this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
                             wx.hideLoading();
                         } else {
@@ -312,11 +313,11 @@ Page({
                             this.recogni.findInRemoteGallery(embedding, face).then((data) => {
                                 console.debug("findInRemoteGallery")
                                 this.setInfo(data);
-                                this.curId = data == null ? "" : data.userId;
+                                this.cur = data == null ? "" : { userId: data.userId, im: png };
                                 this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
                             }).catch((res) => {
                                 console.debug(res);
-                                this.curId = "";
+                                this.cur = null;
                                 this.setInfo();
                                 this.setData({ preview: this.imgSrc, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
                             }).finally(() => { wx.hideLoading(); });
@@ -443,16 +444,17 @@ Page({
 
     /**
      * 确认记录
-     * @param {*} userId 
+     * @param {object} person 
      */
-    setStatus: function (userId, status) {
-        if (userId == undefined || userId == "") {
+    setStatus: function (person, status) {
+        if (person == undefined || person == null) {
             return;
         }
         let examList = this.data.examList;
         for (let item of examList) {
-            if (item.userId == userId) {
+            if (item.userId == person.userId) {
                 item.isRecogni = status;
+                item.im = person.im;
                 if (status == "未识别") {
                     item.updateTime = "";
                 } else {
