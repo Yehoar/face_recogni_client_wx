@@ -327,17 +327,22 @@ export class AntiSpoofing {
         // 封装上传数据
 
         let embeddings = [];
+        let faces = [];
         // image to embedding
         for (var index in this.frames) {
             let image = this.frames[index];
             let landmarks = image["pred"];
-            let [embedding] = this.detector.predict({
+            let [embedding, faceT] = this.detector.predict({
                 image: image,
                 faceLandmark: landmarks,
                 returnTensor: true,
-                returnFace: false
+                returnFace: true
             });
             embeddings.push(embedding);
+            // 转换图片
+            let face = Tools.tensorToImage(faceT, 112, 112);
+            faces.push(face);
+            faceT.dispose();
         }
         // 判断是否同一个人
         let dist = Tools.calculateAllDistance(embeddings);
@@ -349,6 +354,8 @@ export class AntiSpoofing {
             let data = { nums: embeddings.length };
             for (let idx in embeddings) {
                 data[`embedding${idx}`] = Float32Array.from(embeddings[idx].arraySync()).buffer;
+                data[`image${idx}`] = Tools.frameToPng(faces[idx]);
+                // console.log(data[`image${idx}`])
             }
             request.api_Collect(data).then((value) => {
                 console.debug(value);

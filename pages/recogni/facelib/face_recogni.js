@@ -248,25 +248,28 @@ export class FaceRecogni {
     /**
      * 向服务器查询
      * @param {*} query  Float32Array
-     * @param {*} face image
+     * @param {*} face image  暂不使用
      */
     findInRemoteGallery(query, face) {
         return request.api_Recogni({
             embedding: query.buffer,
-            im: face.data
+            // im: face.data
         }).then((data) => {
-            console.debug(data);
-            if (data.status_code !== "success") {
-                data = null;
-            } else {
-                let info = data.info;
+            // console.debug(data);
+            let info = null;
+            if (data.status_code == "success") {
+                if (data.encrypt) {  //解密响应
+                    data = request.doDecrypt(data["json"]);
+                    if (typeof (data) == "string") {
+                        data = JSON.parse(data);
+                    }
+                }
+                info = data["info"];
                 if (typeof (info) == "string") {
-                    data = JSON.parse(info);
-                } else {
-                    data = info;
+                    info = JSON.parse(info);
                 }
             }
-            return Promise.resolve(data);
+            return Promise.resolve(info);
         })
     }
 

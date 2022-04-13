@@ -237,16 +237,18 @@ Page({
                 item["major"],
                 item["clazz"],
                 item["isRecogni"] + item["updateTime"],
-                item["im"]
-            ].join(",");
-            rows.push(row);
+            ];
+            let im = item["im"];  // 超长字符串分段
+            for (let i = 0; i < im.length; i += 0x7ffe) {
+                row.push(im.slice(i, i + 0x7ffe));
+            }
+            rows.push(row.join(","));
         }
-        rows = rows.join("\n");
+        rows = "\uFEFF" + rows.join("\r\n");
         try {
             const fs = wx.getFileSystemManager()
             const filepath = `${wx.env.USER_DATA_PATH}/tmp_${new Date().getTime()}`;
-            const res = fs.writeFileSync(filepath, rows, 'utf8');
-            console.debug(res);
+            const res = fs.writeFileSync(filepath, rows, 'utf-8');
             wx.hideLoading();
             wx.showModal({
                 content: "确认导出",
@@ -297,13 +299,16 @@ Page({
                             returnTensor: false,
                             returnFace: true
                         });
-                        let png = Tools.frameToPng(face)
+                        let png = Tools.frameToPng(face).toString();
+                        // this.setData({ preview: png });
                         // console.debug(embedding)
                         // 本地查询
                         let person = null;
                         person = this.recogni.findInLocalGallery(embedding);
                         if (person != null) {
                             console.debug("findInLocalGallery")
+                            // let im = person.img;
+                            // console.log(im);
                             this.setInfo(person);
                             this.cur = { userId: person.userId, im: png };
                             this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
@@ -312,6 +317,7 @@ Page({
                             // 远程查询
                             this.recogni.findInRemoteGallery(embedding, face).then((data) => {
                                 console.debug("findInRemoteGallery")
+                                // let im = data["img"];
                                 this.setInfo(data);
                                 this.cur = data == null ? "" : { userId: data.userId, im: png };
                                 this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
@@ -407,6 +413,7 @@ Page({
                 obj["slideButtons"] = this.createSlideButton(item["userId"]);
                 obj["isRecogni"] = "未识别";
                 obj["updateTime"] = "";
+                obj["im"] = "-";
                 tmp.push(obj);
             }
             examList = tmp;
@@ -435,10 +442,10 @@ Page({
         let userId = e.detail["data"];
 
         if (index == 0) {  //确认
-            this.setStatus(userId, "已识别");
+            this.setStatus({ userId: userId, im: "-" }, "已识别");
         } else if (index == 1) {  //清除
             // 按钮2
-            this.setStatus(userId, "未识别");
+            this.setStatus({ userId: userId, im: "-" }, "未识别");
         }
     },
 
@@ -454,11 +461,12 @@ Page({
         for (let item of examList) {
             if (item.userId == person.userId) {
                 item.isRecogni = status;
-                item.im = person.im;
                 if (status == "未识别") {
                     item.updateTime = "";
+                    item.im = "-";
                 } else {
                     item.updateTime = Tools.formatTime();
+                    item.im = (person.im == "-") ? item.im : person.im;
                 }
                 break;
             }
