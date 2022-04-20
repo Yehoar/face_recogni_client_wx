@@ -267,7 +267,16 @@ export function api_Register(user, encrypt = true) {
     wx.showLoading({ title: '注册中，请稍候', mask: true });
     let showFail = (res) => {  // 请求失败
         wx.hideLoading();
-        let message = res.message == "" ? "注册失败" : res.message;
+        console.debug(res.message);
+        let message = res.message;
+        if (typeof (message) == "object") {
+            for (let key in message) {
+                message = message[key][0];
+                break;
+            }
+        } else if (typeof (message) != "string") {
+            message = "注册失败";
+        }
         wx.showToast({ title: message, icon: "error" });
     };
     const app = getApp();
@@ -303,7 +312,16 @@ export function api_Login(form, encrypt = true) {
     let showFail = (res) => {  // 请求失败
         wx.hideLoading();
         console.debug(res);
-        wx.showToast({ title: "登录失败", icon: "error" });
+        let message = res.message;
+        if (typeof (message) == "object") {
+            for (let key in message) {
+                message = message[key][0];
+                break;
+            }
+        } else if (typeof (message) != "string") {
+            message = "注册失败";
+        }
+        wx.showToast({ title: message, icon: "error" });
     };
     const app = getApp();
     let data = encrypt ? doEncrypt(form) : form;

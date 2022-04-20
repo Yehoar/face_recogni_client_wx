@@ -39,9 +39,9 @@ Page({
         user.clazz = e.detail.value.clazz;
         user.passwd = e.detail.value.passwd.toString();
 
-        if (user.userId == "") {
-            wx.showToast({ title: "请输入学号", icon: "none" });
-        } else if (user.userName == "") {
+        if (user.userId == "" || user.userId.length != 11) {
+            wx.showToast({ title: "学号格式错误", icon: "none" });
+        } else if (user.name == "") {
             wx.showToast({ title: "请输入姓名", icon: "none" });
         } else if (user.department == "") {
             wx.showToast({ title: "请输入学院", icon: "none" });

@@ -12,7 +12,7 @@ export class FaceRecogni {
     constructor() {
         const MODEL_NAME = "mobilefacenet";
         const EMBEDDING_LENGTH = 128;
-        const THRESHOLD = 0.85;
+        const THRESHOLD = 1.11;
 
         this.canDetect = false;
         this.canRecogni = false;
@@ -227,6 +227,8 @@ export class FaceRecogni {
             return null;
         }
         query = tf.tensor1d(query);
+        let min = this.threshold;
+        let mp = null;
         for (let item of this.gallery) {
             for (let key in item) {
                 if (!key.includes("embd")) {
@@ -237,12 +239,14 @@ export class FaceRecogni {
                     continue;
                 }
                 let dist = Tools.calculatePairDistance(query, embedding);
-                if (dist < this.threshold) {
-                    return item;
+                if (dist < min) {
+                    min = dist;
+                    mp = item;
                 }
             }
         }
-        return null;
+        console.debug(min);
+        return mp;
     }
 
     /**

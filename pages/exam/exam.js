@@ -43,8 +43,21 @@ Page({
 
     initPage: function () {
         const examList = this.data.examList;
+        let examId = null;
+        try {
+            let keys = wx.getStorageInfoSync().keys;
+            for (let key of keys) {
+                if (key.includes("examList-")) {
+                    examId = parseInt(key.substr(9));
+                    break;
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
         for (let item of examList) {
-            item.slideButtons = this.createSlideButton("load", item.uuid);
+            let op = item.uuid == examId ? "delete" : "load";
+            item.slideButtons = this.createSlideButton(op, item.uuid);
         }
         this.setData({ examList: examList })
     },
@@ -77,7 +90,10 @@ Page({
                 let filename = tempFile.name;
                 if (filename < 4) { return; }
                 let endString = filename.substr(filename.length - 4);
-                if (endString != ".csv" && endString != "xlsx") { return; }
+                if (endString != ".csv" && endString != "xlsx") {
+                    wx.showToast({ title: '不支持的类型', icon: "error" });
+                    return;
+                }
                 that.setData({ file: tempFile.name, [`formData.file`]: tempFile });
                 console.debug(tempFile)
             }

@@ -3,30 +3,35 @@
     "packOptions": {
         "ignore": [
             {
-                "type": "folder",
-                "value": ".vscode"
+                "value": ".vscode",
+                "type": "folder"
+            },
+            {
+                "value": "readme",
+                "type": "folder"
+            },
+            {
+                "value": ".gitignore",
+                "type": "file"
+            },
+            {
+                "value": "readme.md",
+                "type": "file"
+            },
+            {
+                "value": "package-lock.json",
+                "type": "file"
+            },
+            {
+                "value": "package.json",
+                "type": "file"
             },
             {
                 "type": "folder",
-                "value": "readme"
-            },
-            {
-                "type": "file",
-                "value": ".gitignore"
-            },
-            {
-                "type": "file",
-                "value": "readme.md"
-            },
-            {
-                "type": "file",
-                "value": "package-lock.json"
-            },
-            {
-                "type": "file",
-                "value": "package.json"
+                "value": "/minitest"
             }
-        ]
+        ],
+        "include": []
     },
     "setting": {
         "urlCheck": false,

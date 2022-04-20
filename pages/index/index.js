@@ -95,7 +95,7 @@ Page({
     if (userType === "Student") {
       this.setData({ can_collect: true, can_recogni: false, can_manage: false, can_logout: true });
     } else if (userType === "Teacher" || userType === "Administrator") {
-      this.setData({ can_collect: true, can_recogni: true, can_manage: true, can_logout: true });
+      this.setData({ can_collect: false, can_recogni: true, can_manage: true, can_logout: true });
     } else {
       this.setData({ can_collect: true, can_recogni: true, can_manage: true, can_logout: false });
     }

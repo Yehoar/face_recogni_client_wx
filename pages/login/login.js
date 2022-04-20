@@ -45,8 +45,8 @@ Page({
     bindBtnLogin() {
         const userId = this.data["userId"];
         const passwd = this.data["passwd"];
-        if (userId.length < 6 || passwd.length < 8) {
-            wx.showToast({ title: '账号密码格式错误', icon: "error" });
+        if (userId.length < 9 || passwd.length < 8) {
+            wx.showToast({ title: '格式错误', icon: "error" });
             return;
         }
         request.api_Login({ userId: userId.toString(), passwd: passwd.toString() });

@@ -152,9 +152,9 @@ export function faceAlignment(image, landmarks, cropSize, returnTensor = false) 
     // 略微扩大
     var tlbr = [
         (top - 5) / image.height,
-        (left - 5) / image.width,
+        (left - 15) / image.width,
         (bottom + 5) / image.height,
-        (right + 5) / image.width
+        (right + 15) / image.width
     ].map((x) => { return (x < 0.0) ? 0.0 : ((x > 1.0) ? 1.0 : x); });  //防止越界
     // tlbr = [0.0, 0.0, 1.0, 1.0]
     // 利用tfjs处理图片

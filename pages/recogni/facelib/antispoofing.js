@@ -113,7 +113,7 @@ export class AntiSpoofing {
     }
 
     /**
-     * 通过寻找序列中的拐点对判断眨眼/张嘴/摇头
+     * 通过寻找序列中的拐点对判断眨眼/张嘴
      */
     checkAR() {
         var record = [];

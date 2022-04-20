@@ -347,7 +347,7 @@ Page({
                 name: "未查询到相关信息",
                 stuId: "未查询到相关信息",
                 department: "未查询到相关信息",
-                "major": "未查询到相关信息"
+                major: "未查询到相关信息"
             };
         } else {
             stuInfo = {
@@ -458,7 +458,8 @@ Page({
             return;
         }
         let examList = this.data.examList;
-        for (let item of examList) {
+        for (let idx in examList) {
+            let item = examList[idx];
             if (item.userId == person.userId) {
                 item.isRecogni = status;
                 if (status == "未识别") {
@@ -468,10 +469,12 @@ Page({
                     item.updateTime = Tools.formatTime();
                     item.im = (person.im == "-") ? item.im : person.im;
                 }
+                // 局部刷新
+                this.setData({["examList[" + idx + "]"]: item });
                 break;
             }
         }
-        this.setData({ examList: examList });
+
     },
 
 })
