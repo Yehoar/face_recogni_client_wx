@@ -17,8 +17,8 @@ page {
   bottom: 0;
   border: 3px solid #ff8c00;
   border-radius: 100%;
-  width: 85%;
-  height: 85%;
+  width: 85vw;
+  height: 85vw;
   margin: auto;
   position: absolute;
   box-shadow: 0 0 0 2000px rgba(248, 248, 255, 1.0);

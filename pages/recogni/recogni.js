@@ -1,6 +1,6 @@
 const facelib = require("./facelib/index");
 
-// const Debug = facelib.Debug;
+const Debug = facelib.Debug;
 
 const AntiSpoofing = facelib.AntiSpoofing;
 const FaceRecogni = facelib.FaceRecogni;
@@ -44,7 +44,7 @@ Page({
 
         if (options["page_type"] === "recogni") {
             wx.setNavigationBarTitle({ title: "考生识别" });
-            this.setData({ page_type: 1, tips: "准备中", devicePosition: "back" });
+            this.setData({ page_type: 1, tips: "准备中", devicePosition: "front" });
             this.page_type = 1;
             this.recogni = new FaceRecogni();
         } else {
@@ -323,7 +323,8 @@ Page({
                                 this.setData({ preview: png, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
                             }).catch((res) => {
                                 console.debug(res);
-                                this.cur = null;
+                                //this.cur = null;
+                                this.cur = { userId: "-", im: png };
                                 this.setInfo();
                                 this.setData({ preview: this.imgSrc, tips: "请确认", btnConfirmDisable: false, btnChangeDisable: false });
                             }).finally(() => { wx.hideLoading(); });
@@ -377,6 +378,7 @@ Page({
             department: "-",
             major: "-"
         };
+        this.cur = null;
         this.setData({ preview: this.imgSrc, stuInfo: stuInfo });
     },
 
@@ -442,9 +444,11 @@ Page({
         let userId = e.detail["data"];
 
         if (index == 0) {  //确认
-            this.setStatus({ userId: userId, im: "-" }, "已识别");
+            let im = (this.cur != null && this.cur["userId"] == "-") ? this.cur["im"] : "-";
+            this.setStatus({ userId: userId, im: im }, "已识别");
+            this.bindBtnChange();
+
         } else if (index == 1) {  //清除
-            // 按钮2
             this.setStatus({ userId: userId, im: "-" }, "未识别");
         }
     },
@@ -470,7 +474,8 @@ Page({
                     item.im = (person.im == "-") ? item.im : person.im;
                 }
                 // 局部刷新
-                this.setData({["examList[" + idx + "]"]: item });
+                this.setData({ ["examList[" + idx + "]"]: item });
+                // this.bindBtnChange();
                 break;
             }
         }

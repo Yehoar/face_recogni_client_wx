@@ -441,6 +441,7 @@ function parseExamList(examId, examList) {
             examList = doDecrypt(examList["json"]);
         }
         const res = wx.getStorageInfoSync();
+        console.debug(res);
         for (let key of res.keys) {
             if (key.substr(0, 9) == prefix) {
                 wx.removeStorageSync(key);
